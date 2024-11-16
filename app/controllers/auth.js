@@ -7,12 +7,10 @@ const User = require('../models/user');
 exports.register = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json({errors: errors.array()});
+        console.error(errors.array());
     }
 
-    const email = req.body.email;
-    const username = req.body.username;
-    const password = req.body.password;
+    const {email, username, password} = req.body;
 
     try {
         // Hash password
@@ -61,11 +59,10 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json({errors: errors.array()});
+        console.error(errors.array());
     }
 
-    const username = req.body.username;
-    const password = req.body.password;
+    const {username, password} = req.body;
 
     try {
         const user = await User.findOne({where: {username}});
