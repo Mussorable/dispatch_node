@@ -1,6 +1,7 @@
 const {validationResult} = require('express-validator');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 
@@ -17,37 +18,33 @@ exports.register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 12);
 
         // Generate a token
-        crypto.randomBytes(32,  async (err, buffer) => {
-            if (err) {
-                return res.status(500).json({
-                    errors: [{message: 'Error generating token'}]
-                });
-            }
+        const token = jwt.sign(
+            {email, username},
+            process.env.JWT_SECRET,
+            {expiresIn: '7d'}
+        );
 
-            const token = buffer.toString('hex');
+        try {
+            const user = new User({
+                email,
+                username,
+                password: hashedPassword,
+                passwordToken: token,
+                passwordExpiration: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+            });
 
-            try {
-                const user = new User({
-                    email,
-                    username,
-                    password: hashedPassword,
-                    passwordToken: token,
-                    passwordExpiration: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
-                });
+            await user.save();
 
-                await user.save();
-
-                res.status(201).json({
-                    message: 'User created successfully',
-                    token
-                });
-            } catch (err) {
-                return res.status(500).json({
-                    message: 'An error occurred while creating the user',
-                    error: err.message
-                });
-            }
-        });
+            res.status(201).json({
+                message: 'User created successfully',
+                token
+            });
+        } catch (err) {
+            return res.status(500).json({
+                message: 'An error occurred while creating the user',
+                error: err.message
+            });
+        }
     } catch (err) {
         return res.status(500).json({
             message: 'An error occurred while hashing the password',
@@ -74,6 +71,12 @@ exports.login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({message: 'Invalid password'});
         }
+
+        const token = jwt.sign(
+            {email: user.email, username: user.username},
+            process.env.JWT_SECRET,
+            {expiresIn: '7d'}
+        );
 
         const currentTime = new Date();
         if (user.passwordExpiration < currentTime) {
