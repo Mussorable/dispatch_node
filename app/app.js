@@ -5,6 +5,13 @@ const app = express();
 const cors = require('cors');
 const sequelize = require('./util/database');
 
+require('./models/user');
+require('./models/driver');
+require('./models/task');
+require('./models/truck');
+require('./models/trailer');
+require('./models/associations');
+
 const authRoutes = require('./routes/auth');
 const driversRoutes = require('./routes/drivers');
 const vehiclesRoutes = require('./routes/vehicles');

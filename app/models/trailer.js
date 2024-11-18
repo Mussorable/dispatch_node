@@ -18,6 +18,14 @@ const Trailer = sequelize.define(
                 notEmpty: true,
                     is: /^\d[A-Za-z]\d \d{4}$/
             }
+        },
+        truckId: {
+            type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: 'trucks',
+                    key: 'id'
+                }
         }
     }
 );

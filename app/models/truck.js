@@ -20,6 +20,14 @@ const Truck = sequelize.define(
                 is: /^\d[A-Za-z]\d \d{4}$/
             }
         },
+        driverId: {
+            type: Sequelize.INTEGER,
+            allowNull: true,
+            references: {
+                model: 'drivers',
+                key: 'id'
+            }
+        },
     }
 );
 

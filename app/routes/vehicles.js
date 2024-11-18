@@ -7,7 +7,7 @@ const vehicleController = require('../controllers/vehicles');
 router.get('/get-all', vehicleController.getVehicles);
 
 router.post('/add/:type', [
-    body('number')
+    body('vehicleNumber')
         .isLength({min: 8, max: 8})
         .withMessage('Number must be 8 characters long'),
 ], vehicleController.addVehicle);

@@ -22,6 +22,14 @@ const Task = sequelize.define(
             type: Sequelize.BOOLEAN,
             allowNull: false,
             defaultValue: false
+        },
+        userId: {
+            type: Sequelize.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'users',
+                    key: 'id'
+                }
         }
     }
 )
