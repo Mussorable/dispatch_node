@@ -4,7 +4,7 @@ const { body } = require('express-validator');
 
 const vehicleController = require('../controllers/vehicles');
 
-router.get('/get-all', vehicleController.getVehicles);
+router.get('/get-all/:type', vehicleController.getVehicles);
 
 router.post('/add/:type', [
     body('vehicleNumber')

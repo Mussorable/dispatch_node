@@ -3,22 +3,34 @@ const Trailer = require('../models/trailer');
 const Driver = require("../models/driver");
 
 exports.getVehicles = async (req, res) => {
-    res.send('vehicles');
+    const type = req.params.type;
+    if (type === 'trucks') {
+        const trucks = await Truck.findAll();
+        res.status(200).json({
+            message: 'Trucks retrieved successfully',
+            trucks: trucks.map(truck => truck.get({plain: true}))
+        });
+    } else if (type === 'trailers') {
+        const trailers = await Trailer.findAll();
+        res.status(200).json({
+            message: 'Trailers retrieved successfully',
+            trailers: trailers.map(trailer => trailer.get({plain: true}))
+        });
+    }
 };
 
 exports.addVehicle = async (req, res) => {
     const type = req.params.type;
-    const {vehicleNumber, driverNumber, additionalNumber} = req.body;
+    const {number, driverNumber, additionalNumber} = req.body;
 
     if (type === 'truck') {
-        const existingTruck = await Truck.findOne({where: {number: vehicleNumber}});
-
+        const existingTruck = await Truck.findOne({where: {number: number}});
         if (existingTruck) {
             return res.status(400).json({message: 'Truck already exists'});
         }
 
         const truck = await Truck.create({
-            number: vehicleNumber,
+            number: number,
         });
 
         res.status(201).json({
@@ -26,14 +38,13 @@ exports.addVehicle = async (req, res) => {
             truck: truck.get({plain: true})
         });
     } else if (type === 'trailer') {
-        const existingTrailer = await Trailer.findOne({where: {number: vehicleNumber}});
-
+        const existingTrailer = await Trailer.findOne({where: {number: number}});
         if (existingTrailer) {
             return res.status(400).json({message: 'Trailer already exists'});
         }
 
         const trailer = await Trailer.create({
-            number: vehicleNumber,
+            number: number,
         });
 
         res.status(201).json({
