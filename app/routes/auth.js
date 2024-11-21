@@ -4,6 +4,7 @@ const { body } = require('express-validator');
 
 const User = require('../models/user');
 const authController = require('../controllers/auth');
+const authMiddleware = require('../util/authMiddleware')
 
 // User login
 router.post('/login', [
@@ -47,5 +48,12 @@ router.post('/register', [
         .withMessage('Password must be between 6 and 32 characters long'),
 ],
     authController.register);
+
+// User logout, clear jwt-cookie
+router.get('/logout', authController.logout);
+
+router.get('/check', authMiddleware, (req, res) => {
+    res.status(200).json({message: 'User is authenticated'});
+});
 
 module.exports = router;

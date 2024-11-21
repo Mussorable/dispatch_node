@@ -1,25 +1,16 @@
-const User = require('../models/user');
+const jwt = require("jsonwebtoken");
 
 const authToken = async (req, res, next) => {
-    const token = req.header('Authorization');
-
-    if (!token) {
-        return res.status(401).json({message: 'Access denied. No token provided.'});
-    }
+    const token = req.cookies.jwt;
+    if (!token) return res.status(401).json({message: 'Access denied. No token provided.'});
 
     try {
-        const user = await User.findOne({where: {passwordToken: token}});
-
-        if (!user) {
-            res.status(401).json({message: 'Access denied. Invalid or expired token.'});
-        }
+        const secretKey = process.env.JWT_SECRET;
+        req.user = jwt.verify(token, secretKey);
 
         next();
     } catch (err) {
-        return res.status(500).json({
-            message: 'An error occurred while verifying the token',
-            error: err.message
-        });
+        return res.status(403).json({message: 'Access denied. Invalid token.'});
     }
 };
 
