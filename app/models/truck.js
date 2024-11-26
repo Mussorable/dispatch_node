@@ -28,6 +28,14 @@ const Truck = sequelize.define(
                 key: 'id'
             }
         },
+        userId: {
+            type: Sequelize.INTEGER,
+            allowNull: true,
+            references: {
+                model: 'users',
+                key: 'id'
+            }
+        }
     }
 );
 

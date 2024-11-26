@@ -12,4 +12,6 @@ router.post('/add/:type', [
         .withMessage('Number must be 8 characters long'),
 ], vehicleController.addVehicle);
 
+router.post('/connect-vehicle', vehicleController.connectVehicle);
+
 module.exports = router;

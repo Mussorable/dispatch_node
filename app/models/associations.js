@@ -8,6 +8,10 @@ User.hasMany(Task, {
     foreignKey: 'userId',
     onDelete: 'CASCADE'
 });
+User.hasMany(Truck, {
+    foreignKey: 'userId',
+    onDelete: 'CASCADE'
+});
 Task.belongsTo(User, {
     foreignKey: 'userId',
     as: 'user'
@@ -28,6 +32,10 @@ Truck.hasOne(Trailer, {
         allowNull: true
     },
     as: 'trailer'
+});
+Truck.belongsTo(User, {
+    foreignKey: 'userId',
+    as: 'user'
 });
 Trailer.belongsTo(Truck, {
     foreignKey: 'truckId',

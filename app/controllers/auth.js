@@ -81,7 +81,13 @@ exports.login = async (req, res) => {
             sameSite: 'strict',
             maxAge: 1000 * 60 * 60 * 24 * 7,
         });
-        res.status(200).json({message: 'User logged in successfully'});
+        res.status(200).json({
+            message: 'User logged in successfully',
+            data: {
+                email: user.email,
+                name: user.username
+            }
+        });
     } catch (err) {
         return res.status(500).json({
             message: 'An error occurred while logging in',
